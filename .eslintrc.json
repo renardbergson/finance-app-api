@@ -3,8 +3,10 @@
     "es2021": true,
     "node": true
   },
-  "extends": "eslint:recommended",
+  "extends": ["eslint:recommended", "prettier"],
   "rules": {
+    "semi": "error",
+    "no-unused-vars": "error",
     "no-console": "warn"
   }
 }
