@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "npx husky install"
+    "postinstall": "npx husky install",
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "Renard Bergson",
@@ -19,6 +20,12 @@
     "globals": "^16.3.0",
     "husky": "^8.0.3",
     "lint-staged": "^15.5.2",
+    "nodemon": "^3.1.10",
     "prettier": "^3.6.2"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "pg": "^8.16.3"
   }
 }

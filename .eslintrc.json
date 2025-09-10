@@ -3,10 +3,12 @@
     "es2021": true,
     "node": true
   },
-  "extends": ["eslint:recommended", "prettier"],
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "extends": ["prettier", "eslint:recommended"],
   "rules": {
     "semi": "error",
-    "no-unused-vars": "error",
-    "no-console": "warn"
+    "no-unused-vars": "error"
   }
 }
