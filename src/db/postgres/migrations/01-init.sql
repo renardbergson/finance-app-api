@@ -3,8 +3,7 @@ CREATE TABLE IF NOT EXISTS users(
   firstName VARCHAR(50) NOT NULL,
   lastName VARCHAR(50) NOT NULL,
   email VARCHAR(50) NOT NULL UNIQUE,
-  pass_salt VARCHAR(255) NOT NULL,
-  pass_hash VARCHAR(255) NOT NULL
+  pass_hash VARCHAR(60) NOT NULL
 );
 
 DO $$
