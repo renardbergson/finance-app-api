@@ -11,7 +11,7 @@ export const pool = new Pool({
   host: process.env.POSTGRES_HOST,
 });
 
-export const querytHelper = {
+export const queryHelper = {
   query: async (query, params) => {
     const client = await pool.connect();
     try {

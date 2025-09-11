@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
-import { PostgresCreateUserRepository } from '../repositories/postgres/create-user';
+import { PostgresCreateUserRepository } from '../repositories/postgres/create-user.js';
 
 export class CreateUserService {
   async handler(createUserParams) {
@@ -8,7 +8,7 @@ export class CreateUserService {
     // ...
     // gerar ID do usuário
     const userID = crypto.randomUUID();
-    // gerar pass_salt e pass_hash
+    // gerar pass_hash
     const pass_hash = await bcrypt.hash(createUserParams.password, 10);
     // enviar dados para o repositório inserir no banco
     const user = {
@@ -18,6 +18,7 @@ export class CreateUserService {
     };
 
     const createUserRepository = new PostgresCreateUserRepository();
-    return await createUserRepository.create(user);
+    const createdUser = await createUserRepository.handler(user);
+    return createdUser;
   }
 }
