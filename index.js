@@ -1,13 +1,8 @@
 import express from 'express';
-import { scriptHelper } from './src/db/postgres/client.js';
 
 const app = express();
+app.use(express.json());
 
-app.get('/', async (req, res) => {
-  const results = await scriptHelper.query('SELECT * FROM users;');
-  res.status(200).send(results);
-});
-
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
+app.listen(process.env.API_PORT, () => {
+  console.log(`Server is running on port ${process.env.API_PORT}`);
 });

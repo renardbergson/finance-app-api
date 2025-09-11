@@ -8,11 +8,11 @@ CREATE TABLE IF NOT EXISTS users(
 );
 
 DO $$
-BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'transactiontype') THEN
-    CREATE TYPE transactionType AS ENUM ('earning', 'expense', 'investment');
-  END IF;
-END
+  BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'transactiontype') THEN
+      CREATE TYPE transactionType AS ENUM ('earning', 'expense', 'investment');
+    END IF;
+  END
 $$;
 
 CREATE TABLE IF NOT EXISTS transactions (
