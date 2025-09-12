@@ -5,6 +5,13 @@ export function badRequest(body) {
   };
 }
 
+export function ok(body) {
+  return {
+    statusCode: 200,
+    body,
+  };
+}
+
 export function created(body) {
   return {
     statusCode: 201,
@@ -15,6 +22,6 @@ export function created(body) {
 export function internalServerError() {
   return {
     statusCode: 500,
-    message: 'Internal Server Error',
+    body: { message: 'Internal Server Error' },
   };
 }
