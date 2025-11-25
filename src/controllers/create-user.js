@@ -2,6 +2,7 @@ import validator from 'validator';
 
 import { CreateUserService } from '../services/create-user.js';
 import { badRequest, created, internalServerError } from './helpers.js';
+import { EmailAlreadyInUseError } from '../errors/user.js';
 
 export class CreateUserController {
     async handler(httpRequest) {
@@ -45,6 +46,14 @@ export class CreateUserController {
                 user: createdUser,
             });
         } catch (error) {
+            if (error instanceof EmailAlreadyInUseError) {
+                return badRequest({
+                    message: error.message,
+                });
+            }
+
+            // TODO: Adicionar mais tipos de erros para tratamento específico
+
             console.error(error);
             return internalServerError();
         }

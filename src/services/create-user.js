@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 
 import { PostgresCreateUserRepository } from '../repositories/postgres/create-user.js';
 import { PostgresGetUserByEmailRepository } from '../repositories/postgres/get-user-by-email.js';
+import { EmailAlreadyInUseError } from '../errors/user.js';
 export class CreateUserService {
     async handler(createUserParams) {
         const getUserByEmailRepository = new PostgresGetUserByEmailRepository();
@@ -10,12 +11,11 @@ export class CreateUserService {
             createUserParams.email,
         );
         if (emailAlreadyInUse) {
-            throw new Error('The provided email is already in use.');
+            throw new EmailAlreadyInUseError(createUserParams.email);
         }
 
         const userID = crypto.randomUUID();
         const pass_hash = await bcrypt.hash(createUserParams.password, 10);
-
         const user = {
             ...createUserParams,
             id: userID,
