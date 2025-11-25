@@ -19,9 +19,16 @@ export function ok(body) {
     };
 }
 
+export function notFound(body) {
+    return {
+        statusCode: 404,
+        body,
+    };
+}
+
 export function internalServerError() {
-  return {
-    statusCode: 500,
-    message: 'Internal Server Error',
-  };
+    return {
+        statusCode: 500,
+        message: 'Internal Server Error',
+    };
 }
