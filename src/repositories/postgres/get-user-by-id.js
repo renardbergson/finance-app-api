@@ -5,6 +5,7 @@ export class PostgresGetUserByIdRepository {
     const user = await queryHelper.query('SELECT * FROM users WHERE id = $1', [
       userId,
     ]);
+
     return user[0];
   }
 }

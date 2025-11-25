@@ -16,7 +16,7 @@ $$;
 
 CREATE TABLE IF NOT EXISTS transactions (
   id UUID PRIMARY KEY,
-  userId UUID REFERENCES users(id) ON DELETE CASCADE,
+  userId UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
   type transactionType NOT NULL,
   name VARCHAR(50) NOT NULL,
   amount NUMERIC(10, 2) NOT NULL,
