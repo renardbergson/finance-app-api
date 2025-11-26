@@ -2,8 +2,8 @@ import { queryHelper } from '../../db/postgres/client.js';
 
 export class PostgresCreateUserRepository {
     async handler(createUserParams) {
+        // a biblioteca PG traduz a query a seguir para o formato o formato de prepared statement do Postgres (PREPARE/EXECUTE)
         await queryHelper.query(
-            // PG sintax
             'INSERT INTO users (id, firstName, lastName, email, pass_hash) VALUES ($1, $2, $3, $4, $5)',
             [
                 createUserParams.id,
