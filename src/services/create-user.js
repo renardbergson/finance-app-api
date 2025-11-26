@@ -15,11 +15,12 @@ export class CreateUserService {
         }
 
         const userID = crypto.randomUUID();
+
         const pass_hash = await bcrypt.hash(createUserParams.password, 10);
         const user = {
             ...createUserParams,
             id: userID,
-            pass_hash, // sobreescrevendo o password com o pass_hash
+            pass_hash,
         };
 
         const createUserRepository = new PostgresCreateUserRepository();
