@@ -5,14 +5,13 @@ import { PostgresUpdateUserRepository } from '../repositories/postgres/update-us
 
 export class UpdateUserService {
     async handler(userId, updateUserParams) {
-        // 1. se o e-mail estiver sendo atualizado, verificar se ele já está em uso
         if (updateUserParams.email) {
             const getUserByEmailRepository =
                 new PostgresGetUserByEmailRepository();
-            const emailAlreadyInUse = await getUserByEmailRepository.handler(
+            const userWithSameEmail = await getUserByEmailRepository.handler(
                 updateUserParams.email,
             );
-            if (emailAlreadyInUse) {
+            if (userWithSameEmail && userWithSameEmail.id !== userId) {
                 throw new EmailAlreadyInUseError(updateUserParams.email);
             }
         }
@@ -20,15 +19,12 @@ export class UpdateUserService {
         const user = {
             ...updateUserParams,
         };
-
-        // 2. se a senha estiver sendo atualizada, hashar a senha
         if (updateUserParams.password) {
             const pass_hash = await bcrypt.hash(updateUserParams.password, 10);
             user.pass_hash = pass_hash;
             delete user.password;
         }
 
-        // 3. chamar o repository para atualizar o usuário
         const updateUserRepository = new PostgresUpdateUserRepository();
         const updatedUser = await updateUserRepository.handler(userId, user);
         return updatedUser;

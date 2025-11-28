@@ -16,7 +16,11 @@ export class CreateUserController {
                 'password',
             ];
             for (const field of requiredFields) {
-                if (!params[field] || params[field].trim() === '') {
+                if (
+                    !params[field] ||
+                    (typeof params[field] === 'string' &&
+                        params[field].trim() === '')
+                ) {
                     return badRequest({
                         message: `Missing required field: ${field}`,
                     });
@@ -34,7 +38,7 @@ export class CreateUserController {
             if (!emailIsValid) {
                 return badRequest({
                     message:
-                        'Invalid email format. Please provide a valid email address.',
+                        'Invalid email. Please provide a valid email address.',
                 });
             }
 
