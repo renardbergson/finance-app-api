@@ -1,16 +1,18 @@
-import validator from 'validator';
-
-import { GetUserByIdService } from '../services/get-user-by-id.js';
-import { badRequest, ok, internalServerError, notFound } from './helpers.js';
+import { GetUserByIdService } from '../services/index.js';
+import {
+    checkIfIdIsValid,
+    invalidUserId,
+    ok,
+    internalServerError,
+    notFound,
+} from './helpers/index.js';
 
 export class GetUserByIdController {
     async handler(httpRequest) {
         try {
-            const isValidUUID = validator.isUUID(httpRequest.params.userId);
-            if (!isValidUUID) {
-                return badRequest({
-                    message: 'The user ID format is not valid',
-                });
+            const idIsValid = checkIfIdIsValid(httpRequest.params.userId);
+            if (!idIsValid) {
+                return invalidUserId();
             }
 
             const getUserByIdService = new GetUserByIdService();

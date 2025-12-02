@@ -1,27 +1,36 @@
-import validator from 'validator';
-import { badRequest, internalServerError, ok } from './helpers.js';
-import { UpdateUserService } from '../services/update-user.js';
+import { UpdateUserService } from '../services/index.js';
 import { EmailAlreadyInUseError } from '../errors/user.js';
+import {
+    invalidPassword,
+    invalidEmail,
+    invalidUserId,
+    checkIfPasswordIsValid,
+    checkIfIdIsValid,
+    checkIfEmailIsValid,
+    badRequest,
+    internalServerError,
+    ok,
+} from './helpers/index.js';
 
 export class UpdateUserController {
     async handler(httpRequest) {
         try {
             // verificar ID
             const userId = httpRequest.params.userId;
-            const isValidUUID = validator.isUUID(userId);
-            if (!isValidUUID) {
-                return badRequest({ message: 'The user ID is not valid' });
+            const idIsValid = checkIfIdIsValid(userId);
+            if (!idIsValid) {
+                return invalidUserId();
             }
 
             // verificar campos permitidos
-            const updateUserParams = httpRequest.body;
+            const params = httpRequest.body;
             const allowedFields = [
                 'firstName',
                 'lastName',
                 'email',
                 'password',
             ];
-            for (const field in updateUserParams) {
+            for (const field in params) {
                 if (!allowedFields.includes(field)) {
                     return badRequest({
                         message: `The field '${field}' is not allowed`,
@@ -30,8 +39,8 @@ export class UpdateUserController {
             }
 
             // verificar campos vazios
-            for (const field in updateUserParams) {
-                const value = updateUserParams[field];
+            for (const field in params) {
+                const value = params[field];
                 if (
                     !value ||
                     (typeof value === 'string' && value.trim() === '')
@@ -43,32 +52,24 @@ export class UpdateUserController {
             }
 
             // verificar senha
-            if (updateUserParams.password) {
-                const passwordIsValid = updateUserParams.password.length >= 8;
+            if (params.password) {
+                const passwordIsValid = checkIfPasswordIsValid(params.password);
                 if (!passwordIsValid) {
-                    return badRequest({
-                        message: 'Password must be at least 8 characters long',
-                    });
+                    return invalidPassword();
                 }
             }
 
             // verificar e-mail
-            if (updateUserParams.email) {
-                const emailIsValid = validator.isEmail(updateUserParams.email);
+            if (params.email) {
+                const emailIsValid = checkIfEmailIsValid(params.email);
                 if (!emailIsValid) {
-                    return badRequest({
-                        message:
-                            'Invalid email. Please provide a valid email address.',
-                    });
+                    return invalidEmail();
                 }
             }
 
             // chamar service
             const updateUserService = new UpdateUserService();
-            const updatedUser = await updateUserService.handler(
-                userId,
-                updateUserParams,
-            );
+            const updatedUser = await updateUserService.handler(userId, params);
 
             return ok(updatedUser);
         } catch (error) {

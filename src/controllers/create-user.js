@@ -1,8 +1,14 @@
-import validator from 'validator';
-
-import { CreateUserService } from '../services/create-user.js';
-import { badRequest, created, internalServerError } from './helpers.js';
+import { CreateUserService } from '../services/index.js';
 import { EmailAlreadyInUseError } from '../errors/user.js';
+import {
+    invalidPassword,
+    invalidEmail,
+    checkIfPasswordIsValid,
+    checkIfEmailIsValid,
+    badRequest,
+    created,
+    internalServerError,
+} from './helpers/index.js';
 
 export class CreateUserController {
     async handler(httpRequest) {
@@ -27,19 +33,14 @@ export class CreateUserController {
                 }
             }
 
-            const passwordIsValid = params.password.length >= 8;
+            const passwordIsValid = checkIfPasswordIsValid(params.password);
             if (!passwordIsValid) {
-                return badRequest({
-                    message: 'Password must be at least 8 characters long',
-                });
+                return invalidPassword();
             }
 
-            const emailIsValid = validator.isEmail(params.email);
+            const emailIsValid = checkIfEmailIsValid(params.email);
             if (!emailIsValid) {
-                return badRequest({
-                    message:
-                        'Invalid email. Please provide a valid email address.',
-                });
+                return invalidEmail();
             }
 
             const createUserService = new CreateUserService();
