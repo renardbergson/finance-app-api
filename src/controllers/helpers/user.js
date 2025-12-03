@@ -1,4 +1,4 @@
-import { badRequest } from './http.js';
+import { badRequest, notFound } from './http.js';
 import validator from 'validator';
 
 export const checkIfIdIsValid = (id) => validator.isUUID(id);
@@ -16,4 +16,8 @@ export const invalidPassword = () =>
 export const invalidEmail = () =>
     badRequest({
         message: 'Invalid email. Please provide a valid email address.',
+    });
+export const userNotFound = () =>
+    notFound({
+        message: 'User not found',
     });

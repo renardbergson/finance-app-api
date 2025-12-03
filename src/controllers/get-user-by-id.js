@@ -4,7 +4,7 @@ import {
     invalidUserId,
     ok,
     internalServerError,
-    notFound,
+    userNotFound,
 } from './helpers/index.js';
 
 export class GetUserByIdController {
@@ -20,9 +20,7 @@ export class GetUserByIdController {
                 httpRequest.params.userId,
             );
             if (!user) {
-                return notFound({
-                    message: 'User not found',
-                });
+                return userNotFound();
             }
 
             return ok(user);
