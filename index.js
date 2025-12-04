@@ -5,12 +5,16 @@ import {
     GetUserByIdController,
     DeleteUserController,
 } from './src/controllers/index.js';
+import { GetUserByIdService } from './src/services/index.js';
+import { PostgresGetUserByIdRepository } from './src/repositories/postgres/index.js';
 
 const app = express();
 app.use(express.json());
 
 app.get('/api/users/:userId', async (req, res) => {
-    const getUserByIdController = new GetUserByIdController();
+    const getUserByIdRepository = new PostgresGetUserByIdRepository();
+    const getUserByIdService = new GetUserByIdService(getUserByIdRepository);
+    const getUserByIdController = new GetUserByIdController(getUserByIdService);
     const { statusCode, body } = await getUserByIdController.handler(req);
     res.status(statusCode).json(body);
 });

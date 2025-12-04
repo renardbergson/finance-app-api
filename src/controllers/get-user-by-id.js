@@ -1,4 +1,3 @@
-import { GetUserByIdService } from '../services/index.js';
 import {
     checkIfIdIsValid,
     invalidUserId,
@@ -6,8 +5,11 @@ import {
     internalServerError,
     userNotFound,
 } from './helpers/index.js';
-
 export class GetUserByIdController {
+    constructor(getUserByIdService) {
+        this.getUserByIdService = getUserByIdService;
+    }
+
     async handler(httpRequest) {
         try {
             const idIsValid = checkIfIdIsValid(httpRequest.params.userId);
@@ -15,8 +17,7 @@ export class GetUserByIdController {
                 return invalidUserId();
             }
 
-            const getUserByIdService = new GetUserByIdService();
-            const user = await getUserByIdService.handler(
+            const user = await this.getUserByIdService.handler(
                 httpRequest.params.userId,
             );
             if (!user) {

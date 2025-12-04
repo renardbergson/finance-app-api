@@ -1,9 +1,9 @@
-import { PostgresGetUserByIdRepository } from '../repositories/postgres/index.js';
-
 export class GetUserByIdService {
+    constructor(getUserByIdRepository) {
+        this.getUserByIdRepository = getUserByIdRepository;
+    }
     async handler(userID) {
-        const getUserByIdRepository = new PostgresGetUserByIdRepository();
-        const user = await getUserByIdRepository.handler(userID);
+        const user = await this.getUserByIdRepository.handler(userID);
         return user;
     }
 }
