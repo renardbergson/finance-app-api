@@ -5,8 +5,12 @@ import {
     GetUserByIdController,
     DeleteUserController,
 } from './src/controllers/index.js';
-import { GetUserByIdService } from './src/services/index.js';
-import { PostgresGetUserByIdRepository } from './src/repositories/postgres/index.js';
+import { GetUserByIdService, CreateUserService } from './src/services/index.js';
+import {
+    PostgresGetUserByIdRepository,
+    PostgresGetUserByEmailRepository,
+    PostgresCreateUserRepository,
+} from './src/repositories/postgres/index.js';
 
 const app = express();
 app.use(express.json());
@@ -20,7 +24,13 @@ app.get('/api/users/:userId', async (req, res) => {
 });
 
 app.post('/api/users', async (req, res) => {
-    const createUserController = new CreateUserController();
+    const getUserByEmailRepository = new PostgresGetUserByEmailRepository();
+    const createUserRepository = new PostgresCreateUserRepository();
+    const createUserService = new CreateUserService(
+        getUserByEmailRepository,
+        createUserRepository,
+    );
+    const createUserController = new CreateUserController(createUserService);
     const { statusCode, body } = await createUserController.handler(req);
     res.status(statusCode).json(body);
 });

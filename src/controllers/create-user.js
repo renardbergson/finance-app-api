@@ -1,4 +1,3 @@
-import { CreateUserService } from '../services/index.js';
 import { EmailAlreadyInUseError } from '../errors/user.js';
 import {
     invalidPassword,
@@ -11,6 +10,10 @@ import {
 } from './helpers/index.js';
 
 export class CreateUserController {
+    constructor(createUserService) {
+        this.createUserService = createUserService;
+    }
+
     async handler(httpRequest) {
         try {
             const params = httpRequest.body;
@@ -43,8 +46,7 @@ export class CreateUserController {
                 return invalidEmail();
             }
 
-            const createUserService = new CreateUserService();
-            const createdUser = await createUserService.handler(params);
+            const createdUser = await this.createUserService.handler(params);
 
             return created({
                 message: 'User created successfully',
