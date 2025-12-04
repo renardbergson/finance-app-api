@@ -5,11 +5,16 @@ import {
     GetUserByIdController,
     DeleteUserController,
 } from './src/controllers/index.js';
-import { GetUserByIdService, CreateUserService } from './src/services/index.js';
+import {
+    GetUserByIdService,
+    CreateUserService,
+    UpdateUserService,
+} from './src/services/index.js';
 import {
     PostgresGetUserByIdRepository,
     PostgresGetUserByEmailRepository,
     PostgresCreateUserRepository,
+    PostgresUpdateUserRepository,
 } from './src/repositories/postgres/index.js';
 
 const app = express();
@@ -36,7 +41,13 @@ app.post('/api/users', async (req, res) => {
 });
 
 app.patch('/api/users/:userId', async (req, res) => {
-    const updateUserController = new UpdateUserController();
+    const getUserByEmailRepository = new PostgresGetUserByEmailRepository();
+    const updateUserRepository = new PostgresUpdateUserRepository();
+    const updateUserService = new UpdateUserService(
+        getUserByEmailRepository,
+        updateUserRepository,
+    );
+    const updateUserController = new UpdateUserController(updateUserService);
     const { statusCode, body } = await updateUserController.handler(req);
     res.status(statusCode).json(body);
 });

@@ -1,4 +1,3 @@
-import { UpdateUserService } from '../services/index.js';
 import { EmailAlreadyInUseError } from '../errors/user.js';
 import {
     invalidPassword,
@@ -13,6 +12,10 @@ import {
 } from './helpers/index.js';
 
 export class UpdateUserController {
+    constructor(updateUserService) {
+        this.updateUserService = updateUserService;
+    }
+
     async handler(httpRequest) {
         try {
             // verificar ID
@@ -68,8 +71,10 @@ export class UpdateUserController {
             }
 
             // chamar service
-            const updateUserService = new UpdateUserService();
-            const updatedUser = await updateUserService.handler(userId, params);
+            const updatedUser = await this.updateUserService.handler(
+                userId,
+                params,
+            );
 
             return ok(updatedUser);
         } catch (error) {

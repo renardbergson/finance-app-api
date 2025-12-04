@@ -1,16 +1,18 @@
-import { PostgresGetUserByEmailRepository } from '../repositories/postgres/index.js';
 import { EmailAlreadyInUseError } from '../errors/user.js';
 import bcrypt from 'bcrypt';
-import { PostgresUpdateUserRepository } from '../repositories/postgres/index.js';
 
 export class UpdateUserService {
+    constructor(getUserByEmailRepository, updateUserRepository) {
+        this.getUserByEmailRepository = getUserByEmailRepository;
+        this.updateUserRepository = updateUserRepository;
+    }
+
     async handler(userId, updateUserParams) {
         if (updateUserParams.email) {
-            const getUserByEmailRepository =
-                new PostgresGetUserByEmailRepository();
-            const userWithSameEmail = await getUserByEmailRepository.handler(
-                updateUserParams.email,
-            );
+            const userWithSameEmail =
+                await this.getUserByEmailRepository.handler(
+                    updateUserParams.email,
+                );
             if (userWithSameEmail && userWithSameEmail.id !== userId) {
                 throw new EmailAlreadyInUseError(updateUserParams.email);
             }
@@ -25,8 +27,10 @@ export class UpdateUserService {
             delete user.password;
         }
 
-        const updateUserRepository = new PostgresUpdateUserRepository();
-        const updatedUser = await updateUserRepository.handler(userId, user);
+        const updatedUser = await this.updateUserRepository.handler(
+            userId,
+            user,
+        );
         return updatedUser;
     }
 }
