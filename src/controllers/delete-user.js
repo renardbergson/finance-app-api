@@ -5,9 +5,11 @@ import {
     userNotFound,
     ok,
 } from './helpers/index.js';
-import { DeleteUserService } from '../services/index.js';
-
 export class DeleteUserController {
+    constructor(deleteUserService) {
+        this.deleteUserService = deleteUserService;
+    }
+
     async handler(httpRequest) {
         try {
             const id = httpRequest.params.userId;
@@ -16,8 +18,7 @@ export class DeleteUserController {
                 return invalidUserId();
             }
 
-            const deleteUserService = new DeleteUserService();
-            const deletedUser = await deleteUserService.handler(id);
+            const deletedUser = await this.deleteUserService.handler(id);
             if (!deletedUser) {
                 return userNotFound();
             }
